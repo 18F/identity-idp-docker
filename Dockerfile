@@ -3,11 +3,13 @@ FROM ubuntu:16.04
 ARG IDP_GIT_REF=
 ARG DEVOPS_GIT_REF=
 
-RUN apt-get update && apt-get dist-upgrade -y
+RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y cloud-guest-utils awscli
 
 # install chef
 COPY docker/scripts/install-chef.sh /tmp/scripts/
 RUN /tmp/scripts/install-chef.sh
+
+COPY docker/files/etc-ssh-ssh_known_hosts /etc/ssh/ssh_known_hosts
 
 # clone identity-devops
 COPY docker/scripts/clone-repo.sh /tmp/scripts/

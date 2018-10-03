@@ -69,7 +69,7 @@ if ! [ -e "./chef-client.rb" ]; then
     exit 3
 fi
 
-#run chef-client --local-mode -c "./chef-client.rb" --no-color
+run chef-client --local-mode -c "./chef-client.rb" --no-color
 
 run rm -rf /tmp/bundler
 
