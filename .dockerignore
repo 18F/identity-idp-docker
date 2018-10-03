@@ -1,0 +1,4 @@
+# Don't add anything to the docker build context by default. Whitelist specific
+# directories by adding them as !name rules.
+*
+!docker/
