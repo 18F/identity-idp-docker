@@ -1,0 +1,21 @@
+docker to dos:
+
+base image:
+    - add an explicit base docker image containing time consuming things like ruby, openssl
+    - refactor identity-base-image cookbooks so that we can cache layers easily
+
+secrets:
+    - remove or defer all ConfigLoader calls in idp configs so that we can dockerbuild without secrets
+    - double check that /etc/login.gov/keys/ is empty after each layer, or even remove it entirely
+
+- move git clone of identity-idp out of chef and into dockerfile
+
+- figure out which recipes from role[base] should really be in the docker image
+
+
+build vs run split:
+    - don't run deploy/activate script at all from dockerbuild
+    - don't run rake db:migrate from dockerbuild
+    - build-post-config fixes
+        - move robots.txt into nginx, out of identity-idp
+
