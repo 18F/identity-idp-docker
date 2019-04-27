@@ -1,6 +1,51 @@
 #!/bin/bash
 set -euo pipefail
 
+run() {
+    echo >&2 "+ $*"
+    "$@"
+}
+
+# usage: berks_vendor_as_needed
+# env vars: $kitchen_subdir, $berksfile_toplevel, $SKIP_BERKS_VENDOR
+berks_vendor_as_needed() {
+    local vendor_path berks_subdir
+    berks_subdir='berks-cookbooks'
+
+    if [ -n "${SKIP_BERKS_VENDOR-}" ]; then
+        echo >&2 "SKIP_BERKS_VENDOR is set, skipping berks vendor check"
+        return
+    fi
+
+    echo >&2 "Checking whether vendored berks-cookbooks are up-to-date"
+    echo >&2 "Set SKIP_BERKS_VENDOR=1 to skip"
+
+    if [ ! -e "$kitchen_subdir/$berks_subdir" ] || \
+       [ -n "$(run find "./$kitchen_subdir/cookbooks" \
+                        -newer "$kitchen_subdir/$berks_subdir" \
+                        -print -quit
+    )" ]; then
+        echo >&2 "Found new cookbooks, running berks vendor"
+    else
+        echo >&2 "$berks_subdir appears up-to-date"
+        return
+    fi
+
+    if [ -n "$berksfile_toplevel" ]; then
+        echo >&2 "Running berks at toplevel"
+        vendor_path="$kitchen_subdir/$berks_subdir"
+    else
+        echo >&2 "Running berks inside $kitchen_subdir"
+        echo >&2 "+ cd '$kitchen_subdir'"
+        cd "$kitchen_subdir"
+        vendor_path="$berks_subdir"
+    fi
+
+    run berks vendor "$vendor_path"
+
+    run touch "$vendor_path"
+}
+
 usage() {
     cat >&2 <<EOM
 usage: $0 [options] REPO_DIR RUN_LIST
@@ -23,15 +68,9 @@ Options:
 EOM
 }
 
-run() {
-    echo >&2 "+ $*"
-    "$@"
-}
-
 env_name='dockerbuild'
 extra_chef_attributes_json='"no_op_default": true'
 kitchen_subdir='chef'
-berks_subdir='berks-cookbooks'
 
 while [ $# -gt 0 ] && [[ $1 = -* ]]; do
     case "$1" in
@@ -92,21 +131,8 @@ cd "$REPO_DIR"
 
 echo >&2 "==========================================================="
 echo >&2 "$0: running berks to vendor cookbooks"
-
-# If Berksfile is at repo toplevel, run outside the kitchen_subdir
-if [ -n "$berksfile_toplevel" ]; then
-    echo >&2 "Running berks at toplevel"
-    run berks vendor "$kitchen_subdir/$berks_subdir"
-fi
-
-echo >&2 "+ cd '$kitchen_subdir'"
-cd "$kitchen_subdir"
-
-# If Berksfile is not at repo toplevel, run inside the kitchen_subdir
-if [ -z "$berksfile_toplevel" ]; then
-    echo >&2 "Running berks"
-    run berks vendor "$berks_subdir"
-fi
+berks_vendor_as_needed
+# ^ will also cd to $kitchen_subdir
 
 echo >&2 "==========================================================="
 echo >&2 "$0: Starting chef run!"
