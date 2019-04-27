@@ -29,6 +29,6 @@ ARG IDP_GIT_REF
 # run chef and install idp
 COPY docker/scripts/install-idp.sh /tmp/scripts/
 #RUN /tmp/scripts/install-idp.sh "$IDP_GIT_REF"
-RUN ["/tmp/scripts/run-chef.sh", "--kitchen-subdir", "kitchen", "--berksfile-toplevel", "--extra-chef-attributes-json", "\"login_dot_gov\": {\"branch_name\": \"$IDP_GIT_REF\"}", "$REPO_DIR/identity-devops", "recipe[login_dot_gov::idp_base]"]
+RUN /tmp/scripts/run-chef.sh --kitchen-subdir kitchen --berksfile-toplevel --extra-chef-attributes-json "\"login_dot_gov\": {\"branch_name\": \"$IDP_GIT_REF\"}" "$REPO_DIR/identity-devops" 'recipe[passenger::daemon],recipe[login_dot_gov::idp_base]'
 
 CMD echo "Hello, this is a test"

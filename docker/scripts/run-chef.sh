@@ -70,11 +70,11 @@ RUN_LIST="$2"
 INFO_DIR=/etc/login.gov/info
 
 mkdir -p "$INFO_DIR"
-run tee "$INFO_DIR/env" <<< "$env_name"
+run tee >&2 "$INFO_DIR/env" <<< "$env_name"
 
 # default EC2 instance "run_list": ["role[idp]"], right now we specify an empty
 # run list for docker
-run tee "$INFO_DIR/chef-attributes.json" <<EOM
+run tee >&2 "$INFO_DIR/chef-attributes.json" <<EOM
 {
     "run_list": [],
     "provisioner": {
@@ -90,8 +90,8 @@ echo >&2 "+ cd '$REPO_DIR'"
 cd "$REPO_DIR"
 
 
-echo "==========================================================="
-echo "$0: running berks to vendor cookbooks"
+echo >&2 "==========================================================="
+echo >&2 "$0: running berks to vendor cookbooks"
 
 # If Berksfile is at repo toplevel, run outside the kitchen_subdir
 if [ -n "$berksfile_toplevel" ]; then
@@ -108,8 +108,8 @@ if [ -z "$berksfile_toplevel" ]; then
     run berks vendor "$berks_subdir"
 fi
 
-echo "==========================================================="
-echo "$0: Starting chef run!"
+echo >&2 "==========================================================="
+echo >&2 "$0: Starting chef run!"
 
 run pwd
 
