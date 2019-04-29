@@ -4,6 +4,7 @@ FROM ubuntu:16.04
 # update the date to force a total rebuild
 ARG CACHE_BUSTER_DATE=2019-04-26
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y cloud-guest-utils awscli
 
 # install chef
@@ -32,7 +33,7 @@ RUN /tmp/scripts/run-chef.sh --kitchen-subdir kitchen --berksfile-toplevel "$REP
 
 # We need pkgconf and sudo. Lots of other stuff in ubuntu-minimal is not
 # strictly needed but comes in handy for debugging.
-RUN apt-get install -y ubuntu-minimal pkgconf
+RUN apt-get install -y sudo pkgconf iputils-ping net-tools netcat-openbsd vim-tiny iproute2 lsb-release
 
 # ====
 
