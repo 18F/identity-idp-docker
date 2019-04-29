@@ -21,3 +21,16 @@ build vs run split:
     - build-post-config fixes
         - move robots.txt into nginx, out of identity-idp
 
+    activate configs:
+        figure out what to do with /etc/login.gov/info (bind mount? pass in data using ENV?)
+
+Container vs instance stuff
+    - set hostname to reflect that it's in a container and isn't the host instance
+    - make sure instance certificate / service discovery stuff is all happy
+    - add info to deploy.json to tell us what container we're talking to
+
+logging:
+    - Make sure New Relic is working
+    - mount volumes?
+    - run aws log agent inside the container instead?
+
