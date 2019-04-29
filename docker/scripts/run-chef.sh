@@ -9,8 +9,9 @@ run() {
 # usage: berks_vendor_as_needed
 # env vars: $kitchen_subdir, $berksfile_toplevel, $SKIP_BERKS_VENDOR
 berks_vendor_as_needed() {
-    local vendor_path berks_subdir
+    local vendor_path berks_subdir orig_pwd
     berks_subdir='berks-cookbooks'
+    orig_pwd="$PWD"
 
     if [ -n "${SKIP_BERKS_VENDOR-}" ]; then
         echo >&2 "SKIP_BERKS_VENDOR is set, skipping berks vendor check"
@@ -28,6 +29,7 @@ berks_vendor_as_needed() {
         echo >&2 "Found new cookbooks, running berks vendor"
     else
         echo >&2 "$berks_subdir appears up-to-date"
+        cd "$orig_pwd"
         return
     fi
 
@@ -44,6 +46,7 @@ berks_vendor_as_needed() {
     run berks vendor "$vendor_path"
 
     run touch "$vendor_path"
+    cd "$orig_pwd"
 }
 
 usage() {
@@ -132,10 +135,11 @@ cd "$REPO_DIR"
 echo >&2 "==========================================================="
 echo >&2 "$0: running berks to vendor cookbooks"
 berks_vendor_as_needed
-# ^ will also cd to $kitchen_subdir
 
 echo >&2 "==========================================================="
 echo >&2 "$0: Starting chef run!"
+echo >&2 "+ cd '$kitchen_subdir'"
+cd "$kitchen_subdir"
 
 run pwd
 

@@ -1,5 +1,7 @@
 docker to dos:
 
+LATEST BLOCKER: deploy/migrate
+
 base image:
     - add an explicit base docker image containing time consuming things like ruby, openssl
     - refactor identity-base-image cookbooks so that we can cache layers easily
@@ -15,7 +17,7 @@ secrets:
 
 build vs run split:
     - don't run deploy/activate script at all from dockerbuild
-    - don't run rake db:migrate from dockerbuild
+    - don't run deploy/migrate or rake db:migrate from dockerbuild
     - build-post-config fixes
         - move robots.txt into nginx, out of identity-idp
 
