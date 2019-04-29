@@ -68,4 +68,6 @@ EXPOSE 80 443
 # Mount logs on host so we can scoop them up with AWS logs agent on parent host
 VOLUME /var/log
 
-CMD /opt/nginx/sbin/nginx -g 'daemon off;'
+COPY docker/scripts/activate-idp.sh /usr/local/bin/activate-idp.sh
+
+CMD /usr/local/bin/activate-idp.sh
