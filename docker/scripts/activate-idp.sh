@@ -17,5 +17,7 @@ fi
 # not depend on service[passenger]
 run id-chef-client main -o 'recipe[passenger::daemon],recipe[instance_certificate::generate],recipe[service_discovery::register],recipe[login_dot_gov::idp_web]'
 
+run service passenger stop
+
 # Exec and start up nginx
 run exec /opt/nginx/sbin/nginx -g 'daemon off;'
