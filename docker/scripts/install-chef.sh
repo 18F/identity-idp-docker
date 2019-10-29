@@ -2,8 +2,8 @@
 # shellcheck disable=SC2230
 set -euo pipefail
 
-CHEF_URL=https://packages.chef.io/files/stable/chef/13.11.3/ubuntu/16.04/chef_13.11.3-1_amd64.deb
-CHEF_SHA256=1517823c278b34ea42d7624603f9507d54b49b511ebfc34ca6c4033cf8d46d6d
+CHEF_URL="https://packages.chef.io/files/stable/chef/14.13.11/ubuntu/18.04/chef_14.13.11-1_amd64.deb"
+CHEF_SHA256="9ddcd5ceef19c95ecc1f34bef080c23d9cb42ae8ebc69fd41dcf1c768a6a708f"
 
 run() {
     echo >&2 "+ $*"
@@ -76,8 +76,14 @@ check_install_berkshelf() {
     chef_version="$(run "$embedded_bin/chef-client" --version)"
 
     case "$chef_version" in
+        'Chef: 12.'*)
+            run "$embedded_bin/gem" install -v '~> 5.0' berkshelf
+            ;;
         'Chef: 13.'*)
-            run "$embedded_bin/gem" install -v '~> 6.0' --no-ri --no-rdoc berkshelf
+            run "$embedded_bin/gem" install -v '~> 6.0' berkshelf
+            ;;
+        'Chef: 14.'*)
+            run "$embedded_bin/gem" install -v '~> 7.0' berkshelf
             ;;
         *)
             echo >&2 "Error: Unknown chef version $chef_version"
