@@ -1,0 +1,11 @@
+build:
+    docker build -t test --build-arg IDP_GIT_REF=98dc7a7b4c324d986a93b1ee436e728c94c2dd90 --build-arg DEVOPS_BASE_GIT_REF=52e5d10bb70aa8328fc7ea32e5029fad9937669a --build-arg DEVOPS_GIT_REF=b965bd193bd6698eb697e2f6af74ef499f2002df .
+
+run:
+    docker run -it -v /etc/login.gov/info:/etc/login.gov/info:ro -p 8080:80 -p 8443:443 -e DEVOPS_ACTIVATE_GIT_REF=209290edbc3e183a63d9f50508bca291979b29a6 test
+    run with --rm to remove after completion
+
+hostname / container ID
+    basename $(cat /proc/1/cpuset)
+    run with --hostname
+
