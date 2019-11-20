@@ -1,5 +1,4 @@
-# identity-idp-config
+# identity-idp-docker
 
-This repository is intended to be used for private, but not secret,
-configuration data used with
-[identity-idp](https://github.com/18F/identity-idp).
+This repository is used to store scripts that manage the infrastructure used to
+build [identity-idp](https://github.com/18F/identity-idp) in docker containers.
