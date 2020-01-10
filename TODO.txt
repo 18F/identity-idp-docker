@@ -1,5 +1,12 @@
 docker to dos:
 
+AWS build / chef run:
+    - EC2 metadata service:
+        - Figure out how to make chef recipes that rely on EC2 metadata service to work
+        - Several recipes use the EC2 metadata service to find out info, but the metadata service isn't exposed to the build container in CodeBuild
+        - There may be some way to pass it through, and ideally the container needs the metadata service in order to get an AWS profile for downloading stuff.
+        - Looks promising: https://blog.jwr.io/aws/codebuild/container/iam/role/2019/05/30/iam-role-inside-container-inside-aws-codebuild.html
+
 LATEST BLOCKER: deploy/migrate
 
 base image:
